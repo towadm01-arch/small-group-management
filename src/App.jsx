@@ -76,10 +76,34 @@ const visitorCount = visitors.length
 const totalAttendance =
   membersPresent + visitorCount
   async function saveReport() {
-  alert('Save button clicked')
 
-   try {
+  if (!selectedGroup) {
+    setSaveMessage('❌ Please select a group')
+    return
+  }
+
+  if (!meetingDate) {
+    setSaveMessage('❌ Please enter meeting date')
+    return
+  }
+
+  if (!lesson.trim()) {
+    setSaveMessage('❌ Please enter lesson/topic')
+    return
+  }
+
+  if (membersPresent === 0 && visitorCount === 0) {
+    setSaveMessage('❌ Attendance cannot be zero')
+    return
+  }
+
+  if (!window.confirm('Save this meeting report?')) {
+    return
+  }
+
+  try {
     setSaveMessage('Saving...')
+
 
     const { data: meetingData, error: meetingError } =
       await supabase
@@ -135,13 +159,22 @@ const totalAttendance =
     }
 
     setSaveMessage('✅ Report Saved Successfully')
+    setMeetingDate('')
+    setLesson('')
+    setHost('')
+    setTeacher('')
+    setPreparedBy('')
+    setOffering('')
+    setCounter1('')
+    setCounter2('')
+
+    setAttendance({})
+    setVisitors([])
+    setVisitorName('')
     alert('✅ Report Saved Successfully')
-``
 
 } catch (error) {
   console.error(error)
-
-  alert(JSON.stringify(error))
 
   setSaveMessage(
     '❌ Failed to Save Report: ' +
@@ -151,42 +184,89 @@ const totalAttendance =
 }
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Small Group Management</h1>
+      <div
+  style={{
+    background: '#2563eb',
+    color: 'white',
+    padding: '20px',
+    borderRadius: '10px',
+    marginBottom: '20px'
+  }}
+>
+  <h1>Small Group Attendance Report</h1>
+  <p>
+    Tabernacle of Worship
+  </p>
+</div>
 
-      <h2>Ministry</h2>
+<div>
+  <label>Ministry</label>
+  <br />
 
-      <select
-        value={selectedMinistry}
-        onChange={(e) => {
-          setSelectedMinistry(e.target.value)
-          setSelectedGroup('')
-          setLeaders([])
-          setMembers([])
-        }}
-      >
-        <option value="">Select Ministry</option>
+  <select
+    value={selectedMinistry}
+    onChange={(e) => {
+      setSelectedMinistry(e.target.value)
+      setSelectedGroup('')
+      setLeaders([])
+      setMembers([])
+      setAttendance({})
+    }}
+    style={{
+      width: '100%',
+      padding: '10px',
+      borderRadius: '6px',
+      border: '1px solid #ccc',
+      background: 'white',
+      fontSize: '16px'
+    }}
+  >
+    <option value="">Select Ministry</option>
 
-        {ministries.map(ministry => (
-          <option key={ministry} value={ministry}>
-            {ministry}
-          </option>
-        ))}
-      </select>
+    {ministries.map((ministry) => (
+      <option key={ministry} value={ministry}>
+        {ministry}
+      </option>
+    ))}
+  </select>
+</div>
 
-      <h2>Group</h2>
+<br />
 
-      <select
-        value={selectedGroup}
-        onChange={(e) => loadGroup(e.target.value)}
-      >
-        <option value="">Select Group</option>
+<div>
+  <label>Small Group</label>
+  <br />
 
-        {filteredGroups.map(group => (
-          <option key={group.id} value={group.id}>
-            {group.group_name}
-          </option>
-        ))}
-      </select>
+  <select
+    value={selectedGroup}
+    onChange={(e) => {
+      setAttendance({})
+      loadGroup(e.target.value)
+    }}
+    disabled={!selectedMinistry}
+    style={{
+      width: '100%',
+      padding: '10px',
+      borderRadius: '6px',
+      border: '1px solid #ccc',
+      background: selectedMinistry ? 'white' : '#e5e7eb',
+      fontSize: '16px',
+      cursor: selectedMinistry ? 'pointer' : 'not-allowed'
+    }}
+  >
+    <option value="">
+      {selectedMinistry
+        ? 'Select Small Group'
+        : 'Select Ministry First'}
+    </option>
+
+    {filteredGroups.map((group) => (
+      <option key={group.id} value={group.id}>
+        {group.group_name}
+      </option>
+    ))}
+  </select>
+</div>
 
 <h2>Group Leaders</h2>
 
@@ -209,6 +289,11 @@ const totalAttendance =
   type="date"
   value={meetingDate}
   onChange={(e) => setMeetingDate(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 </div>
 
@@ -222,6 +307,11 @@ const totalAttendance =
   placeholder="Lesson / Topic"
   value={lesson}
   onChange={(e) => setLesson(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 </div>
 
@@ -235,6 +325,11 @@ const totalAttendance =
   placeholder="Host"
   value={host}
   onChange={(e) => setHost(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 </div>
 
@@ -248,6 +343,11 @@ const totalAttendance =
   placeholder="Teacher"
   value={teacher}
   onChange={(e) => setTeacher(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 </div>
 
@@ -287,6 +387,11 @@ const totalAttendance =
   placeholder="Visitor Name"
   value={visitorName}
   onChange={(e) => setVisitorName(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 
 <button
@@ -337,6 +442,11 @@ const totalAttendance =
   placeholder="0.00"
   value={offering}
   onChange={(e) => setOffering(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 </div>
 
@@ -350,6 +460,11 @@ const totalAttendance =
   placeholder="Counter 1"
   value={counter1}
   onChange={(e) => setCounter1(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 </div>
 
@@ -363,17 +478,30 @@ const totalAttendance =
   placeholder="Counter 2"
   value={counter2}
   onChange={(e) => setCounter2(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 
 </div>
 
 <hr />
 
-<h2>Summary</h2>
+<div
+  style={{
+    background: '#f3f4f6',
+    padding: '15px',
+    borderRadius: '10px'
+  }}
+>
+  <h2>Summary</h2>
 
-<p>Members Present: {membersPresent}</p>
-<p>Visitors Present: {visitorCount}</p>
-<p>Total Attendance: {totalAttendance}</p>
+  <p>Members Present: {membersPresent}</p>
+  <p>Visitors Present: {visitorCount}</p>
+  <p>Total Attendance: {totalAttendance}</p>
+</div>
 <hr />
 
 <h2>Prepared By</h2>
@@ -383,14 +511,27 @@ const totalAttendance =
   placeholder="Prepared By"
   value={preparedBy}
   onChange={(e) => setPreparedBy(e.target.value)}
+  style={{
+  width: '100%',
+  padding: '10px',
+  borderRadius: '6px'
+}}
 />
 
 <br />
 <br />
 <button
   type="button"
-  
   onClick={saveReport}
+  style={{
+    background: '#16a34a',
+    color: 'white',
+    padding: '12px 24px',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
+  }}
 >
   Save Report
 </button>
