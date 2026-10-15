@@ -5,12 +5,17 @@
 body {
   margin: 0;
   background: #f4f6f8;
+  hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 24px 0;
+}
   font-family: Arial, sans-serif;
   color: #222;
 }
 
 .container {
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -60,7 +65,8 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   display: block;
   width: 100%;
   padding: 12px;
@@ -71,7 +77,8 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: #1f6f50;
   box-shadow: 0 0 0 3px rgba(31, 111, 80, 0.1);
@@ -110,4 +117,86 @@ button[type="submit"]:hover {
   section {
     padding: 18px;
   }
+}
+hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 24px 0;
+}
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+}
+.save-button {
+  width: 100%;
+  margin-top: 20px;
+}
+.card {
+  background: white;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+.attendance-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.attendance-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.attendance-item label {
+  margin: 0;
+  font-weight: normal;
+}
+
+.download-button {
+  background: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.download-button:hover {
+  background: #1e40af;
+}
+
+.toggle-button {
+  background: #1f6f50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.toggle-button:hover {
+  background: #18563e;
+}
+
+.toggle-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.action-button {
+  flex: 1;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.toggle-button {
+  margin-top: 20px;
 }
